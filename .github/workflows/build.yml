@@ -1,0 +1,39 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  # running a seperate job on each due to artifact output name difference
+  build-windows:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: make
+      run: make all
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v5.0.0
+      with:
+        name: Atomulator-windows
+        path: src/Atomulator.exe
+
+  build-ubuntu:
+    name: Build on Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: make
+      run: make all
+
+    - name: Upload Build
+      uses: actions/upload-artifact@v5.0.0
+      with:
+        name: Atomulator-linux
+        path: Atomulator
