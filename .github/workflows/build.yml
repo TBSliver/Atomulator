@@ -29,6 +29,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: install deps
+      run: apt install libalut-dev liballegro4-dev
+
     - name: make
       run: make all
 
