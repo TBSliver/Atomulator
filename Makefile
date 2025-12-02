@@ -10,18 +10,67 @@ else
 	endif
 endif
 
-MAKEFILE_TARGET = Makefile
-SRC_DIR = src
+SRCDIR = src
+OBJDIR = obj
 
-ifeq ($(OS),linux)
-	MAKEFILE_TARGET = Makefile.linux
+ifeq ($(OS),windows)
+	VPATH = $(SRCDIR) $(SRCDIR)/resid-fp $(SRCDIR)/AtoMMC
+	CPP  = g++.exe
+    CC   = gcc.exe
+    WINDRES = windres.exe
+    CFLAGS = -O3 -march=i686 -ffast-math -fomit-frame-pointer -falign-loops -falign-jumps -falign-functions
+    # -ggdb
+    OBJ = 6502.o 6522via.o 8255.o 8271.o 1770.o atom.o config.o csw.o ddnoise.o debugger.o disc.o fdi.o fdi2raw.o soundopenal.o ssd.o uef.o video.o avi.o win.o win-keydefine.o resid.o atom.res
+    SIDOBJ = convolve-sse.o convolve.o envelope.o extfilt.o filter.o pot.o sid.o voice.o wave6581__ST.o wave6581_P_T.o wave6581_PS_.o wave6581_PST.o wave8580__ST.o wave8580_P_T.o wave8580_PS_.o wave8580_PST.o wave.o
+    MMCOBJ = atommc.o atmmc2core.o atmmc2wfn.o ff_emu.o ff_emudir.o wildcard.o
+
+    DEFS = 	-DINCLUDE_SDDOS
+    LIBS =  -mwindows -lalleg -lz -lalut -lopenal32 -lwinmm -lstdc++ -static -static-libgcc -static-libstdc++
+
+    TARGET_BIN = Atomulator.exe
+else ifeq ($(OS),linux)
+	VPATH = $(SRCDIR) $(SRCDIR)/resid-fp $(SRCDIR)/atommc
+	CPP  = g++
+    CC   = gcc
+    WINDRES =
+    CFLAGS = -O3 -ffast-math -fomit-frame-pointer -falign-loops -falign-jumps -falign-functions -DINCLUDE_SDDOS
+    # -march=i686 -ggdb
+    OBJ = 6502.o 6522via.o 8255.o 8271.o atom.o config.o csw.o ddnoise.o debugger.o disc.o fdi.o fdi2raw.o soundopenal.o ssd.o uef.o video.o avi.o linux.o linux-keydefine.o linux-gui.o resid.o 1770.o
+    SIDOBJ = convolve-sse.o convolve.o envelope.o extfilt.o filter.o pot.o sid.o voice.o wave6581__ST.o wave6581_P_T.o wave6581_PS_.o wave6581_PST.o wave8580__ST.o wave8580_P_T.o wave8580_PS_.o wave8580_PST.o wave.o
+    MMCOBJ = atommc.o atmmc2core.o atmmc2wfn.o ff_emu.o ff_emudir.o wildcard.o
+
+    DEFS =
+    LIBS =  -lalleg -lz -lalut -lopenal -lstdc++ -L/usr/local/lib -lm
+
+    TARGET_BIN = Atomulator
+else
+	$(error Should not happen)
 endif
 
-# Above taken and manipulated from https://github.com/KRMisha/Makefile (MIT)
+FULLOBJ = $(foreach objname, $(OBJ), $(OBJDIR)/$(objname))
+FULLSIDOBJ = $(foreach objname, $(OBJ), $(OBJDIR)/$(objname))
+FULLMMCOBJ = $(foreach objname, $(OBJ), $(OBJDIR)/$(objname))
 
 help:
 	@echo Available targets: all, clean
 	@echo See $(MAKEFILE_TARGET) in src for more targets
 
-% :
-	make -C $(SRC_DIR) -f $(MAKEFILE_TARGET) $@
+$(TARGET_BIN) : $(FULLOBJ) $(FULLSIDOBJ) $(FULLMMCOBJ)
+	$(CC) $^ -o $(TARGET_BIN) $(LIBS)
+
+all : $(TARGET_BIN)
+
+clean :
+	@echo Todo
+
+$(OBJDIR)/%.o : $(SRCDIR)/%.c
+	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
+
+$(OBJDIR)/%.o : $(SRCDIR)/%.cc
+	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
+
+atom.res: src/atom.rc
+	$(WINDRES) -i atom.rc --input-format=rc -o atom.res -O coff
+
+$(OBJDIR) :
+	mkdir -p $(OBJDIR)
