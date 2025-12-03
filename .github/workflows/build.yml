@@ -29,65 +29,70 @@ jobs:
           freealut:i
           openal:i
 
-    - name: Setup Allegro4 Build
-      working-directory: lib/allegro4
-      run: mkdir Build
+    - run: |
+        ls C:/mingw32/include
+        ls C:/mingw32/include/AL
 
-    - name: Allegro4 CMake
-      working-directory: lib/allegro4/Build
-      run: |
-        $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
-        cmake -Wno-dev `
-        -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo" `
-        -DCMAKE_COLOR_MAKEFILE:BOOL="0" `
-        -DCMAKE_C_COMPILER:FILEPATH="gcc.exe" `
-        -DCMAKE_CXX_COMPILER:STRING="g++.exe" `
-        -DCMAKE_LINKER:FILEPATH="ld.exe" `
-        -DCMAKE_MAKE_PROGRAM:FILEPATH="mingw32-make.exe" `
-        -DCMAKE_NM:FILEPATH="nm.exe" `
-        -DDDRAW_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include" `
-        -DDDRAW_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libddraw.a" `
-        -DDINPUT_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include" `
-        -DDINPUT_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libdinput.a" `
-        -DDSOUND_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include" `
-        -DDSOUND_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libdsound.a" `
-        -DDXGUID_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libdxguid.a" `
-        -DSHARED:BOOL="1" `
-        -DWANT_ALLEGROGL:BOOL="0" `
-        -DWANT_DOCS:BOOL="0" `
-        -DWANT_EXAMPLES:BOOL="0" `
-        -DWANT_JPGALLEG:BOOL="0" `
-        -DWANT_LOADPNG:BOOL="0" `
-        -DWANT_LOGG:BOOL="0" `
-        -DWANT_MODULES:BOOL="0" `
-        -DWANT_TESTS:BOOL="0" `
-        -DWANT_TOOLS:BOOL="0" `
-        -DWANT_X11:BOOL="0" `
-        -G "MinGW Makefiles" `
-        ..
-
-    - name: Allegro4 make
-      working-directory: lib/allegro4/Build
-      run: |
-        $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
-        mingw32-make.exe
-
-    - name: make Atomulator
-      run: |
-        $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
-        mingw32-make.exe EXTRA_DEFS=-IC:/mingw32/include all
-
-    - name: Copy DLLs
-      run:
-        cp lib/allegro4/Build/lib/alleg44.dll bin
-        cp $env:BUILD_TOOL_BIN/libalut-0.dll bin
-        cp $env:BUILD_TOOL_BIN/libopenal-1.dll bin
-
-    - name: Upload Build
-      uses: actions/upload-artifact@v5.0.0
-      with:
-        name: Atomulator-windows
-        path: bin
+## Paused temporarily for debugging
+#    - name: Setup Allegro4 Build
+#      working-directory: lib/allegro4
+#      run: mkdir Build
+#
+#    - name: Allegro4 CMake
+#      working-directory: lib/allegro4/Build
+#      run: |
+#        $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
+#        cmake -Wno-dev `
+#        -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo" `
+#        -DCMAKE_COLOR_MAKEFILE:BOOL="0" `
+#        -DCMAKE_C_COMPILER:FILEPATH="gcc.exe" `
+#        -DCMAKE_CXX_COMPILER:STRING="g++.exe" `
+#        -DCMAKE_LINKER:FILEPATH="ld.exe" `
+#        -DCMAKE_MAKE_PROGRAM:FILEPATH="mingw32-make.exe" `
+#        -DCMAKE_NM:FILEPATH="nm.exe" `
+#        -DDDRAW_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include" `
+#        -DDDRAW_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libddraw.a" `
+#        -DDINPUT_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include" `
+#        -DDINPUT_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libdinput.a" `
+#        -DDSOUND_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include" `
+#        -DDSOUND_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libdsound.a" `
+#        -DDXGUID_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libdxguid.a" `
+#        -DSHARED:BOOL="1" `
+#        -DWANT_ALLEGROGL:BOOL="0" `
+#        -DWANT_DOCS:BOOL="0" `
+#        -DWANT_EXAMPLES:BOOL="0" `
+#        -DWANT_JPGALLEG:BOOL="0" `
+#        -DWANT_LOADPNG:BOOL="0" `
+#        -DWANT_LOGG:BOOL="0" `
+#        -DWANT_MODULES:BOOL="0" `
+#        -DWANT_TESTS:BOOL="0" `
+#        -DWANT_TOOLS:BOOL="0" `
+#        -DWANT_X11:BOOL="0" `
+#        -G "MinGW Makefiles" `
+#        ..
+#
+#    - name: Allegro4 make
+#      working-directory: lib/allegro4/Build
+#      run: |
+#        $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
+#        mingw32-make.exe
+#
+#    - name: make Atomulator
+#      run: |
+#        $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
+#        mingw32-make.exe EXTRA_DEFS=-IC:/mingw32/include all
+#
+#    - name: Copy DLLs
+#      run:
+#        cp lib/allegro4/Build/lib/alleg44.dll bin
+#        cp $env:BUILD_TOOL_BIN/libalut-0.dll bin
+#        cp $env:BUILD_TOOL_BIN/libopenal-1.dll bin
+#
+#    - name: Upload Build
+#      uses: actions/upload-artifact@v5.0.0
+#      with:
+#        name: Atomulator-windows
+#        path: bin
 
   build-ubuntu:
     name: Build on Ubuntu
