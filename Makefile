@@ -28,7 +28,7 @@ ifeq ($(OS),windows)
     SIDOBJ = convolve-sse.o convolve.o envelope.o extfilt.o filter.o pot.o sid.o voice.o wave6581__ST.o wave6581_P_T.o wave6581_PS_.o wave6581_PST.o wave8580__ST.o wave8580_P_T.o wave8580_PS_.o wave8580_PST.o wave.o
     MMCOBJ = atmmc2core.o atmmc2wfn.o ff_emu.o ff_emudir.o wildcard.o
 
-    DEFS = 	-DINCLUDE_SDDOS -Ilib/allegro4/include -Ilib/allegro4/Build/include $(EXTRA_DEFS)
+    DEFS = 	-DINCLUDE_SDDOS -Ilib/allegro4/include -Ilib/allegro4/Build/include -Ilib/openal-soft/include -Ilib/openal-soft/build/include $(EXTRA_DEFS)
     LIBS =  -mwindows -lalleg -lz -lalut -lopenal32 -lwinmm -lstdc++ -static -static-libgcc -static-libstdc++
 
     TARGET_BIN = Atomulator.exe
