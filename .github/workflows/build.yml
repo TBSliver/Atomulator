@@ -68,6 +68,7 @@ jobs:
 
     - name: Save Cache Allegro4
       id: cache-allegro4-save
+      if: steps.cache-allegro4-restore.outputs.cache-hit != 'true'
       uses: actions/cache/save@v4
       with:
         path: lib/allegro4/Build
@@ -96,6 +97,7 @@ jobs:
 
     - name: Save Cache OpenAL
       id: cache-openal-save
+      if: steps.cache-openal-restore.outputs.cache-hit != 'true'
       uses: actions/cache/save@v4
       with:
         path: lib/openal-soft/build
@@ -113,16 +115,18 @@ jobs:
         key: ${{ runner.os }}-openal
 
     - name: Make Freealut
+      if: steps.cache-freealut-restore.outputs.cache-hit != 'true'
       working-directory: lib/freealut/build
       run: |
         cmake -G "MinGW Makefiles" `
         -DOPENAL_INCLUDE_DIR:FILEPATH="$env:GITHUB_WORKSPACE/lib/openal-soft/include" `
-        -DOPENAL_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/openal-soft/build/Release/OpenAL32.dll" `
+        -DOPENAL_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/openal-soft/build/OpenAL32.dll" `
         ..
         mingw32-make.exe
 
     - name: Save Cache Freealut
       id: cache-freealut-save
+      if: steps.cache-freealut-restore.outputs.cache-hit != 'true'
       uses: actions/cache/save@v4
       with:
         path: lib/freealut/build
