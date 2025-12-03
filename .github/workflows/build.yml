@@ -27,6 +27,7 @@ jobs:
           make:i
           alure:i
           freealut:i
+          openal:i
 
     - name: Setup Allegro4 Build
       working-directory: lib/allegro4
