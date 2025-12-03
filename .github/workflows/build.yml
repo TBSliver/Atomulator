@@ -138,14 +138,14 @@ jobs:
         $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
         mingw32-make.exe all
 
-    - name: Copy DLLs
+    - name: Copy DLLs and Roms into release
       run: |
-        ls lib/allegro4/Build/lib
-        ls lib/openal-soft/build
-        ls lib/freealut/build
-        cp lib/allegro4/Build/lib/*.dll bin
-        cp lib/openal-soft/build/*.dll bin
-        cp lib/freealut/build/*.dll bin
+        Copy-Item lib/allegro4/Build/lib/alleg44.dll bin
+        Copy-Item lib/openal-soft/build/OpenAL32.dll bin
+        Copy-Item lib/freealut/build/src/libalut.dll bin
+        Copy-Item -Recurse roms bin
+        Copy-Item C:\mingw32\i686-w64-mingw32\lib\libstdc++-6.dll bin
+        Copy-Item C:\mingw32\opt\bin\libgcc_s_dw2-1.dll bin
 
     - name: Upload Build
       uses: actions/upload-artifact@v5.0.0
