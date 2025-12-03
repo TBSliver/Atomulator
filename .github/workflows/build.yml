@@ -32,7 +32,6 @@ jobs:
     - run: |
         ls C:/mingw64/include
         ls C:/mingw32/include
-        ls C:/msys64/include
         
         Get-ChildItem -Path C:\msys64 -Filter al.h -Recurse -ErrorAction SilentlyContinue -Force
 
