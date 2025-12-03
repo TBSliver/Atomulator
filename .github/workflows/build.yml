@@ -146,6 +146,7 @@ jobs:
         Copy-Item -Recurse roms bin
         Copy-Item C:\mingw32\i686-w64-mingw32\lib\libstdc++-6.dll bin
         Copy-Item C:\mingw32\opt\bin\libgcc_s_dw2-1.dll bin
+        Copy-Item C:\mingw32\opt\bin\libwinpthread-1.dll bin
 
     - name: Upload Build
       uses: actions/upload-artifact@v5.0.0
