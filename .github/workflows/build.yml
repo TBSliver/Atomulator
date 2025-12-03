@@ -30,6 +30,7 @@ jobs:
           mingw-w64-i686-alure
           mingw-w64-i686-freealut
           mingw-w64-i686-openal
+          cmake
 
     - name: Setup Allegro4 Build
       working-directory: lib/allegro4
