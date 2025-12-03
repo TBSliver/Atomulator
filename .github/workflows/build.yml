@@ -72,12 +72,9 @@ jobs:
         mingw32-make.exe
 
     - name: make Atomulator
-      env:
-        C_INCLUDE_PATH: C:/mingw32/include
       run: |
         $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
-        $env:CPATH = "C:/mingw32/include"
-        mingw32-make.exe all
+        mingw32-make.exe EXTRA_DEFS=-IC:/mingw32/include all
 
     - name: Copy DLLs
       run:
