@@ -17,15 +17,6 @@ jobs:
       with:
         submodules: 'true'
 
-    - name: Whats actually in there - before!
-      run: |
-        echo "Msys64"
-        ls C:\msys64
-        echo "Mysys64/mingw32"
-        ls C:\msys64\mingw32
-        echo "Mysys64/mingw32/bin"
-        ls C:\msys64\mingw32\bin
-
     - uses: msys2/setup-msys2@v2
       with:
         pacboy: >-
@@ -38,27 +29,23 @@ jobs:
       working-directory: lib/allegro4
       run: mkdir Build
 
-    - name: Whats actually in there?
-      run: |
-        echo "Msys64"
-        ls C:\msys64
-        echo "Mysys64/mingw32"
-        ls C:\msys64\mingw32
-        echo "Mysys64/mingw32/bin"
-        ls C:\msys64\mingw32\bin
-
-    - run: get-command gcc.exe
+    - run: |
+        get-command gcc.exe
+        get-command g++.exe
+        get-command ld.exe
+        get-command mingw32-make.exe
+        get-command nm.exe
 
     - name: Allegro4 CMake
       working-directory: lib/allegro4/Build
       run: >-
         cmake -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo"
-        -DCMAKE_C_COMPILER:FILEPATH="C:/msys64/mingw32/bin/gcc.exe"
+        -DCMAKE_C_COMPILER:FILEPATH="gcc.exe"
         -DCMAKE_COLOR_MAKEFILE:BOOL="0"
-        -DCMAKE_CXX_COMPILER:STRING="C:/msys64/mingw32/bin/g++.exe"
-        -DCMAKE_LINKER:FILEPATH="C:/msys64/mingw32/bin/ld.exe"
-        -DCMAKE_MAKE_PROGRAM:FILEPATH="C:/msys64/mingw32/bin/mingw32-make.exe"
-        -DCMAKE_NM:FILEPATH="C:/msys64/mingw32/bin/nm.exe"
+        -DCMAKE_CXX_COMPILER:STRING="g++.exe"
+        -DCMAKE_LINKER:FILEPATH="ld.exe"
+        -DCMAKE_MAKE_PROGRAM:FILEPATH="mingw32-make.exe"
+        -DCMAKE_NM:FILEPATH="nm.exe"
         -DDDRAW_INCLUDE_DIR:PATH="../../dx80_mgw/include"
         -DDDRAW_LIBRARY:FILEPATH="../../dx80_mgw/lib/libddraw.a"
         -DDINPUT_INCLUDE_DIR:PATH="../../dx80_mgw/include"
@@ -82,10 +69,10 @@ jobs:
 
     - name: Allegro4 make
       working-directory: lib/allegro4/Build
-      run: C:/msys64/mingw32/bin/mingw32-make.exe
+      run: mingw32-make.exe
 
     - name: make
-      run: C:/msys64/mingw32/bin/mingw32-make.exe
+      run: mingw32-make.exe
 
     - name: Upload Build
       uses: actions/upload-artifact@v5.0.0
