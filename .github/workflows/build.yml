@@ -139,7 +139,7 @@ jobs:
         mingw32-make.exe all
 
     - name: Copy DLLs
-      run:
+      run: |
         ls lib/allegro4/Build/lib
         ls lib/openal-soft/build
         ls lib/freealut/build
