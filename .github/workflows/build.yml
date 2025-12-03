@@ -17,6 +17,15 @@ jobs:
       with:
         submodules: 'true'
 
+    - name: Whats actually in there - before!
+      run: |
+        echo "Msys64"
+        ls C:\msys64
+        echo "Mysys64/mingw32"
+        ls C:\msys64\mingw32
+        echo "Mysys64/mingw32/bin"
+        ls C:\msys64\mingw32\bin
+
     - uses: msys2/setup-msys2@v2
       with:
         pacboy: >-
@@ -30,7 +39,13 @@ jobs:
       run: mkdir Build
 
     - name: Whats actually in there?
-      run: ls C:\msys64\mingw32\bin
+      run: |
+        echo "Msys64"
+        ls C:\msys64
+        echo "Mysys64/mingw32"
+        ls C:\msys64\mingw32
+        echo "Mysys64/mingw32/bin"
+        ls C:\msys64\mingw32\bin
 
     - run: get-command gcc.exe
 
