@@ -166,8 +166,11 @@ jobs:
     - name: make
       run: make all
 
+    - name: Copy ROMS
+      run: cp -r roms bin
+
     - name: Upload Build
       uses: actions/upload-artifact@v5.0.0
       with:
         name: Atomulator-linux
-        path: bin/Atomulator
+        path: bin
