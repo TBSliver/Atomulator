@@ -29,7 +29,19 @@ ifeq ($(OS),windows)
     MMCOBJ = atmmc2core.o atmmc2wfn.o ff_emu.o ff_emudir.o wildcard.o
 
     DEFS = 	-DINCLUDE_SDDOS -Ilib/allegro4/include -Ilib/allegro4/Build/include -Ilib/openal-soft/include -Ilib/freealut/include $(EXTRA_DEFS)
-    LIBS =  -mwindows -lalleg -lz -lalut -lopenal32 -lwinmm -lstdc++ -static -static-libgcc -static-libstdc++
+    LIBS =  -mwindows \
+    		-Llib/allegro4/Build/lib \
+    		-Llib/openal-soft/build \
+    		-Llib/freealut/build/src \
+    		-lalleg44.dll \
+    		-lz \
+    		-lalut.dll \
+    		-lOpenAL32.dll \
+    		-lwinmm \
+    		-lstdc++ \
+    		-static \
+    		-static-libgcc \
+    		-static-libstdc++
 
     TARGET_BIN = Atomulator.exe
 else ifeq ($(OS),linux)
