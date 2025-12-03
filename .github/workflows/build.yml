@@ -33,8 +33,8 @@ jobs:
         ls C:/mingw64/include
         ls C:/mingw32/include
         
-        Get-ChildItem -Path C:\mingw64 -Filter al.h -Recurse -ErrorAction SilentlyContinue -Force
-        Get-ChildItem -Path C:\mingw32 -Filter al.h -Recurse -ErrorAction SilentlyContinue -Force
+        Get-ChildItem -Path C:\mingw64 -Filter *.h -Recurse -ErrorAction SilentlyContinue -Force
+        Get-ChildItem -Path C:\mingw32 -Filter *.h -Recurse -ErrorAction SilentlyContinue -Force
 
 ## Paused temporarily for debugging
 #    - name: Setup Allegro4 Build
