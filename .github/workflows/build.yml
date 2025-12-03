@@ -41,6 +41,7 @@ jobs:
       shell: msys2 {0}
       run: >-
         cmake -Wno-dev
+        -DCMAKE_POLICY_VERSION_MINIMUM=3.5
         -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo"
         -DCMAKE_COLOR_MAKEFILE:BOOL="0"
         -DCMAKE_C_COMPILER:FILEPATH="gcc.exe"
