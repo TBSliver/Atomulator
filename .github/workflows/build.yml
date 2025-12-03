@@ -14,14 +14,63 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: make
-      run: make all
+      with:
+        submodules: 'true'
 
-    - name: Upload a Build Artifact
+    - uses: msys2/setup-msys2@v2
+      with:
+        pacboy: >-
+          gcc:i
+          make:i
+          alure:i
+          freealut:i
+
+    - name: Setup Allegro4 Build
+      working-directory: lib/allegro4
+      run: mkdir Build
+
+    - name: Allegro4 CMake
+      working-directory: lib/allegro4/Build
+      run: >-
+        cmake -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo"
+        -DCMAKE_C_COMPILER:FILEPATH="C:/msys2/mingw32/bin/gcc.exe"
+        -DCMAKE_COLOR_MAKEFILE:BOOL="0"
+        -DCMAKE_CXX_COMPILER:STRING="C:/msys2/mingw32/bin/g++.exe"
+        -DCMAKE_LINKER:FILEPATH="C:/msys2/mingw32/bin/ld.exe"
+        -DCMAKE_MAKE_PROGRAM:FILEPATH="C:/msys2/mingw32/bin/mingw32-make.exe"
+        -DCMAKE_NM:FILEPATH="C:/msys2/mingw32/bin/nm.exe"
+        -DDDRAW_INCLUDE_DIR:PATH="../../dx80_mgw/include"
+        -DDDRAW_LIBRARY:FILEPATH="../../dx80_mgw/lib/libddraw.a"
+        -DDINPUT_INCLUDE_DIR:PATH="../../dx80_mgw/include"
+        -DDINPUT_LIBRARY:FILEPATH="../../dx80_mgw/lib/libdinput.a"
+        -DDSOUND_INCLUDE_DIR:PATH="../../dx80_mgw/include"
+        -DDSOUND_LIBRARY:FILEPATH="../../dx80_mgw/lib/libdsound.a"
+        -DDXGUID_LIBRARY:FILEPATH="../../dx80_mgw/lib/libdxguid.a"
+        -DSHARED:BOOL="1"
+        -DWANT_ALLEGROGL:BOOL="0"
+        -DWANT_DOCS:BOOL="0"
+        -DWANT_EXAMPLES:BOOL="0"
+        -DWANT_JPGALLEG:BOOL="0"
+        -DWANT_LOADPNG:BOOL="0"
+        -DWANT_LOGG:BOOL="0"
+        -DWANT_MODULES:BOOL="0"
+        -DWANT_TESTS:BOOL="0"
+        -DWANT_TOOLS:BOOL="0"
+        -DWANT_X11:BOOL="0"
+        -G "MinGW Makefiles"
+
+    - name: Allegro4 make
+      working-directory: lib/allegro4/Build
+      run: C:/msys2/mingw32/bin/mingw32-make.exe
+
+    - name: make
+      run: C:/msys2/mingw32/bin/mingw32-make.exe
+
+    - name: Upload Build
       uses: actions/upload-artifact@v5.0.0
       with:
         name: Atomulator-windows
-        path: src/Atomulator.exe
+        path: bin/Atomulator.exe
 
   build-ubuntu:
     name: Build on Ubuntu
@@ -40,4 +89,4 @@ jobs:
       uses: actions/upload-artifact@v5.0.0
       with:
         name: Atomulator-linux
-        path: Atomulator
+        path: bin/Atomulator
