@@ -78,25 +78,29 @@ $(BUILD_DIR)/%.o : $(SRC_DIR)/%.c | $(BUILD_DIR)
 $(BUILD_DIR)/%.o : $(SRC_DIR)/%.cc | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
 
-$(BUILD_DIR)/atommc/%.o : $(SRC_DIR)/atommc/%.c | $(BUILD_DIR)
+$(BUILD_DIR)/atommc/%.o : $(SRC_DIR)/atommc/%.c | $(BUILD_DIR)/atommc
 	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
 
-$(BUILD_DIR)/atommc/%.o : $(SRC_DIR)/atommc/%.cc | $(BUILD_DIR)
+$(BUILD_DIR)/atommc/%.o : $(SRC_DIR)/atommc/%.cc | $(BUILD_DIR)/atommc
 	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
 
-$(BUILD_DIR)/resid-fp/%.o : $(SRC_DIR)/resid-fp/%.c | $(BUILD_DIR)
+$(BUILD_DIR)/resid-fp/%.o : $(SRC_DIR)/resid-fp/%.c | $(BUILD_DIR)/resid-fp
 	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
 
-$(BUILD_DIR)/resid-fp/%.o : $(SRC_DIR)/resid-fp/%.cc | $(BUILD_DIR)
+$(BUILD_DIR)/resid-fp/%.o : $(SRC_DIR)/resid-fp/%.cc | $(BUILD_DIR)/resid-fp
 	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
 
 $(BUILD_DIR)/atom.res: src/atom.rc | $(BUILD_DIR)
-	$(WINDRES) -i atom.rc --input-format=rc -o atom.res -O coff
+	$(WINDRES) -i $(SRC_DIR)/atom.rc --input-format=rc -o $(BUILD_DIR)/atom.res -O coff
 
 $(BUILD_DIR) : ;
 	$(MKDIR) $(BUILD_DIR)
-	$(MKDIR) $(BUILD_DIR)/resid-fp
-	$(MKDIR) $(BUILD_DIR)/atommc
+
+$(BUILD_DIR)/resid-fp : $(BUILD_DIR)
+	$(MKDIR) "$(BUILD_DIR)/resid-fp"
+
+$(BUILD_DIR)/atommc : $(BUILD_DIR)
+	$(MKDIR) "$(BUILD_DIR)/atommc"
 
 $(BIN_DIR) : ;
 	$(MKDIR) $(BIN_DIR)
