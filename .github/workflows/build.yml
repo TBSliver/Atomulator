@@ -76,6 +76,7 @@ jobs:
         C_INCLUDE_PATH: C:/mingw32/include
       run: |
         $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
+        $env:CPATH = "C:/mingw32/include"
         mingw32-make.exe all
 
     - name: Copy DLLs
