@@ -74,13 +74,19 @@ jobs:
     - name: make
       run: |
         $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
-        mingw32-make.exe
+        mingw32-make.exe all
+
+    - name: Copy DLLs
+      run:
+        cp lib/allegro4/Build/lib/alleg44.dll bin
+        cp $env:BUILD_TOOL_BIN/libalut-0.dll bin
+        cp $env:BUILD_TOOL_BIN/libopenal-1.dll bin
 
     - name: Upload Build
       uses: actions/upload-artifact@v5.0.0
       with:
         name: Atomulator-windows
-        path: bin/Atomulator.exe
+        path: bin
 
   build-ubuntu:
     name: Build on Ubuntu
