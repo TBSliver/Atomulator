@@ -11,6 +11,9 @@ jobs:
   build-windows:
     name: Build on Windows
     runs-on: windows-latest
+    env:
+      BUILD_TOOL_BIN: C:/mingw32/bin
+      INCLUDE: C:/mingw32/include
 
     steps:
     - uses: actions/checkout@v4
@@ -31,44 +34,47 @@ jobs:
 
     - name: Allegro4 CMake
       working-directory: lib/allegro4/Build
-      env:
-        BUILD_TOOL_BIN: C:/mingw32/bin/
-      run: >-
-        cmake -Wno-dev
-        -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo"
-        -DCMAKE_C_COMPILER:FILEPATH="$env:BUILD_TOOL_BIN/gcc.exe"
-        -DCMAKE_COLOR_MAKEFILE:BOOL="0"
-        -DCMAKE_CXX_COMPILER:STRING="$env:BUILD_TOOL_BIN/g++.exe"
-        -DCMAKE_LINKER:FILEPATH="$env:BUILD_TOOL_BIN/ld.exe"
-        -DCMAKE_MAKE_PROGRAM:FILEPATH="$env:BUILD_TOOL_BIN/mingw32-make.exe"
-        -DCMAKE_NM:FILEPATH="$env:BUILD_TOOL_BIN/nm.exe"
-        -DDDRAW_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include"
-        -DDDRAW_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libddraw.a"
-        -DDINPUT_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include"
-        -DDINPUT_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libdinput.a"
-        -DDSOUND_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include"
-        -DDSOUND_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libdsound.a"
-        -DDXGUID_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libdxguid.a"
-        -DSHARED:BOOL="1"
-        -DWANT_ALLEGROGL:BOOL="0"
-        -DWANT_DOCS:BOOL="0"
-        -DWANT_EXAMPLES:BOOL="0"
-        -DWANT_JPGALLEG:BOOL="0"
-        -DWANT_LOADPNG:BOOL="0"
-        -DWANT_LOGG:BOOL="0"
-        -DWANT_MODULES:BOOL="0"
-        -DWANT_TESTS:BOOL="0"
-        -DWANT_TOOLS:BOOL="0"
-        -DWANT_X11:BOOL="0"
-        -G "MinGW Makefiles"
+      run: |
+        $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
+        cmake -Wno-dev `
+        -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo" `
+        -DCMAKE_COLOR_MAKEFILE:BOOL="0" `
+        -DCMAKE_C_COMPILER:FILEPATH="gcc.exe" `
+        -DCMAKE_CXX_COMPILER:STRING="g++.exe" `
+        -DCMAKE_LINKER:FILEPATH="ld.exe" `
+        -DCMAKE_MAKE_PROGRAM:FILEPATH="mingw32-make.exe" `
+        -DCMAKE_NM:FILEPATH="nm.exe" `
+        -DDDRAW_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include" `
+        -DDDRAW_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libddraw.a" `
+        -DDINPUT_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include" `
+        -DDINPUT_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libdinput.a" `
+        -DDSOUND_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include" `
+        -DDSOUND_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libdsound.a" `
+        -DDXGUID_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libdxguid.a" `
+        -DSHARED:BOOL="1" `
+        -DWANT_ALLEGROGL:BOOL="0" `
+        -DWANT_DOCS:BOOL="0" `
+        -DWANT_EXAMPLES:BOOL="0" `
+        -DWANT_JPGALLEG:BOOL="0" `
+        -DWANT_LOADPNG:BOOL="0" `
+        -DWANT_LOGG:BOOL="0" `
+        -DWANT_MODULES:BOOL="0" `
+        -DWANT_TESTS:BOOL="0" `
+        -DWANT_TOOLS:BOOL="0" `
+        -DWANT_X11:BOOL="0" `
+        -G "MinGW Makefiles" `
         ..
 
     - name: Allegro4 make
       working-directory: lib/allegro4/Build
-      run: mingw32-make.exe
+      run: |
+        $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
+        mingw32-make.exe
 
     - name: make
-      run: mingw32-make.exe
+      run: |
+        $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
+        mingw32-make.exe
 
     - name: Upload Build
       uses: actions/upload-artifact@v5.0.0
