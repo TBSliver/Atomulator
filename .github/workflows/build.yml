@@ -29,16 +29,19 @@ jobs:
       working-directory: lib/allegro4
       run: mkdir Build
 
+    - name: Whats actually in there?
+      run: ls C:/msys64
+
     - name: Allegro4 CMake
       working-directory: lib/allegro4/Build
       run: >-
         cmake -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo"
-        -DCMAKE_C_COMPILER:FILEPATH="C:/msys2/mingw32/bin/gcc.exe"
+        -DCMAKE_C_COMPILER:FILEPATH="C:/msys64/mingw32/bin/gcc.exe"
         -DCMAKE_COLOR_MAKEFILE:BOOL="0"
-        -DCMAKE_CXX_COMPILER:STRING="C:/msys2/mingw32/bin/g++.exe"
-        -DCMAKE_LINKER:FILEPATH="C:/msys2/mingw32/bin/ld.exe"
-        -DCMAKE_MAKE_PROGRAM:FILEPATH="C:/msys2/mingw32/bin/mingw32-make.exe"
-        -DCMAKE_NM:FILEPATH="C:/msys2/mingw32/bin/nm.exe"
+        -DCMAKE_CXX_COMPILER:STRING="C:/msys64/mingw32/bin/g++.exe"
+        -DCMAKE_LINKER:FILEPATH="C:/msys64/mingw32/bin/ld.exe"
+        -DCMAKE_MAKE_PROGRAM:FILEPATH="C:/msys64/mingw32/bin/mingw32-make.exe"
+        -DCMAKE_NM:FILEPATH="C:/msys64/mingw32/bin/nm.exe"
         -DDDRAW_INCLUDE_DIR:PATH="../../dx80_mgw/include"
         -DDDRAW_LIBRARY:FILEPATH="../../dx80_mgw/lib/libddraw.a"
         -DDINPUT_INCLUDE_DIR:PATH="../../dx80_mgw/include"
@@ -62,10 +65,10 @@ jobs:
 
     - name: Allegro4 make
       working-directory: lib/allegro4/Build
-      run: C:/msys2/mingw32/bin/mingw32-make.exe
+      run: C:/msys64/mingw32/bin/mingw32-make.exe
 
     - name: make
-      run: C:/msys2/mingw32/bin/mingw32-make.exe
+      run: C:/msys64/mingw32/bin/mingw32-make.exe
 
     - name: Upload Build
       uses: actions/upload-artifact@v5.0.0
