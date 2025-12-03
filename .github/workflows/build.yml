@@ -24,7 +24,7 @@ jobs:
       working-directory: lib/allegro4
       run: mkdir Build
 
-    - name: Cache Allegro4 Cmake
+    - name: Restore Cache Allegro4
       id: cache-allegro4-restore
       uses: actions/cache/restore@v4
       with:
@@ -66,14 +66,14 @@ jobs:
         ..
         mingw32-make.exe
 
-    - name: Cache Allegro4 Cmake
+    - name: Save Cache Allegro4
       id: cache-allegro4-save
       uses: actions/cache/save@v4
       with:
         path: lib/allegro4/Build
         key: ${{ steps.cache-allegro4-restore.outputs.cache-primary-key }}
 
-    - name: Cache OpenAL CMake
+    - name: Restore Cache OpenAL
       id: cache-openal-restore
       uses: actions/cache/restore@v4
       with:
@@ -82,26 +82,51 @@ jobs:
 
     - name: OpenAL Make & Build
       if: steps.cache-openal-restore.outputs.cache-hit != 'true'
-      working-directory: lib/openal-soft
+      working-directory: lib/openal-soft/build
       run: |
         $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
-        cmake -B build `
-        -DCMAKE_BUILD_TYPE=Release `
-        -A Win32 `
+        cmake -G "MinGW Makefiles" `
         -DALSOFT_TESTS=ON `
         -DALSOFT_BUILD_ROUTER=ON `
         -DALSOFT_REQUIRE_WINMM=ON `
         -DALSOFT_REQUIRE_DSOUND=ON `
         -DALSOFT_REQUIRE_WASAPI=ON `
-        .
-        cmake --build build --config Release
+        ..
+        mingw32-make.exe
 
-    - name: Cache OpenAL CMake
+    - name: Save Cache OpenAL
       id: cache-openal-save
       uses: actions/cache/save@v4
       with:
         path: lib/openal-soft/build
         key: ${{ steps.cache-openal-restore.outputs.cache-primary-key }}
+
+    - name: Setup Freealut Build
+      working-directory: lib/freealut
+      run: mkdir build
+
+    - name: Restore Cache Freealut
+      id: cache-freealut-restore
+      uses: actions/cache/restore@v4
+      with:
+        path: lib/freealut/build
+        key: ${{ runner.os }}-openal
+
+    - name: Make Freealut
+      working-directory: lib/freealut/build
+      run: |
+        cmake -G "MinGW Makefiles" `
+        -DOPENAL_INCLUDE_DIR:FILEPATH="$env:GITHUB_WORKSPACE/lib/openal-soft/include" `
+        -DOPENAL_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/openal-soft/build/Release/OpenAL32.dll" `
+        ..
+        mingw32-make.exe
+
+    - name: Save Cache Freealut
+      id: cache-freealut-save
+      uses: actions/cache/save@v4
+      with:
+        path: lib/freealut/build
+        key: ${{ steps.cache-freealut-restore.outputs.cache-primary-key }}
 
     - name: make Atomulator
       run: |
@@ -111,9 +136,11 @@ jobs:
     - name: Copy DLLs
       run:
         ls lib/allegro4/Build/lib
-        ls lib/openal-soft/build/Release
+        ls lib/openal-soft/build
+        ls lib/freealut/build
         cp lib/allegro4/Build/lib/*.dll bin
-        cp lib/openal-soft/build/Release/*.dll bin
+        cp lib/openal-soft/build/*.dll bin
+        cp lib/freealut/build/*.dll bin
 
     - name: Upload Build
       uses: actions/upload-artifact@v5.0.0
