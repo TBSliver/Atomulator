@@ -14,6 +14,7 @@ jobs:
     env:
       BUILD_TOOL_BIN: C:/mingw32/bin
       INCLUDE: C:/mingw32/include
+      MSYSTEM: MINGW32
 
     steps:
     - uses: actions/checkout@v4
