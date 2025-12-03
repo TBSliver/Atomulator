@@ -34,11 +34,16 @@ jobs:
     - run: |
         ls C:/mingw64/include
         ls C:/mingw32/include
-        ls C:/msys64
+        ls C:/msys64/usr/bin
+        ls C:/msys64/usr/lib
+        ls C:/msys64/mingw32
         
         Get-ChildItem -Path C:\mingw64 -Filter al.h -Recurse -ErrorAction SilentlyContinue -Force
+        Get-ChildItem -Path C:\mingw64 -Filter bfd.h -Recurse -ErrorAction SilentlyContinue -Force
         Get-ChildItem -Path C:\mingw32 -Filter al.h -Recurse -ErrorAction SilentlyContinue -Force
+        Get-ChildItem -Path C:\mingw32 -Filter bfd.h -Recurse -ErrorAction SilentlyContinue -Force
         Get-ChildItem -Path C:\msys64 -Filter al.h -Recurse -ErrorAction SilentlyContinue -Force
+        Get-ChildItem -Path C:\msys64 -Filter bfd.h -Recurse -ErrorAction SilentlyContinue -Force
 
 ## Paused temporarily for debugging
 #    - name: Setup Allegro4 Build
