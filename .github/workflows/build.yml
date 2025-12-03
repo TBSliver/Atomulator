@@ -24,12 +24,12 @@ jobs:
     - uses: msys2/setup-msys2@v2
       with:
         msystem: MINGW32
-        pacboy: >-
-          gcc:i
-          make:i
-          alure:i
-          freealut:i
-          openal:i
+        install: >-
+          mingw-w64-i686-gcc
+          mingw-w64-i686-make
+          mingw-w64-i686-alure
+          mingw-w64-i686-freealut
+          mingw-w64-i686-openal
 
     - run: |
         ls C:/mingw64/include
@@ -93,7 +93,7 @@ jobs:
 #    - name: make Atomulator
 #      run: |
 #        $env:Path = "$env:BUILD_TOOL_BIN;" + $env:Path
-#        mingw32-make.exe EXTRA_DEFS=-IC:/mingw32/include all
+#        mingw32-make.exe EXTRA_DEFS=-I/mingw32/include all
 #
 #    - name: Copy DLLs
 #      run:
