@@ -58,6 +58,7 @@ jobs:
         -DWANT_TOOLS:BOOL="0"
         -DWANT_X11:BOOL="0"
         -G "MinGW Makefiles"
+        ..
 
     - name: Allegro4 make
       working-directory: lib/allegro4/Build
