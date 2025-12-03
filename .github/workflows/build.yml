@@ -30,7 +30,7 @@ jobs:
       run: mkdir Build
 
     - name: Whats actually in there?
-      run: ls C:/msys64
+      run: ls C:/msys64/mingw32/bin
 
     - name: Allegro4 CMake
       working-directory: lib/allegro4/Build
