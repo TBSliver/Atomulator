@@ -29,24 +29,19 @@ jobs:
       working-directory: lib/allegro4
       run: mkdir Build
 
-    - run: |
-        get-command gcc.exe
-        get-command g++.exe
-        get-command ld.exe
-        get-command mingw32-make.exe
-        get-command nm.exe
-
     - name: Allegro4 CMake
       working-directory: lib/allegro4/Build
+      env:
+        BUILD_TOOL_BIN: C:/mingw32/bin/
       run: >-
         cmake -Wno-dev
         -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo"
-        -DCMAKE_C_COMPILER:FILEPATH="gcc.exe"
+        -DCMAKE_C_COMPILER:FILEPATH="$env:BUILD_TOOL_BIN/gcc.exe"
         -DCMAKE_COLOR_MAKEFILE:BOOL="0"
-        -DCMAKE_CXX_COMPILER:STRING="g++.exe"
-        -DCMAKE_LINKER:FILEPATH="ld.exe"
-        -DCMAKE_MAKE_PROGRAM:FILEPATH="mingw32-make.exe"
-        -DCMAKE_NM:FILEPATH="nm.exe"
+        -DCMAKE_CXX_COMPILER:STRING="$env:BUILD_TOOL_BIN/g++.exe"
+        -DCMAKE_LINKER:FILEPATH="$env:BUILD_TOOL_BIN/ld.exe"
+        -DCMAKE_MAKE_PROGRAM:FILEPATH="$env:BUILD_TOOL_BIN/mingw32-make.exe"
+        -DCMAKE_NM:FILEPATH="$env:BUILD_TOOL_BIN/nm.exe"
         -DDDRAW_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include"
         -DDDRAW_LIBRARY:FILEPATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/lib/libddraw.a"
         -DDINPUT_INCLUDE_DIR:PATH="$env:GITHUB_WORKSPACE/lib/dx80_mgw/include"
