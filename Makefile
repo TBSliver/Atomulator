@@ -10,11 +10,15 @@ else
 	endif
 endif
 
-SRCDIR = src
-OBJDIR = obj
+SRC_DIR = src
+BUILD_DIR = build
+BIN_DIR = bin
+
+# Commands
+MKDIR := mkdir
 
 ifeq ($(OS),windows)
-	VPATH = $(SRCDIR) $(SRCDIR)/resid-fp $(SRCDIR)/AtoMMC
+	VPATH = $(SRC_DIR) $(SRC_DIR)/resid-fp $(SRC_DIR)/AtoMMC
 	CPP  = g++.exe
     CC   = gcc.exe
     WINDRES = windres.exe
@@ -24,12 +28,12 @@ ifeq ($(OS),windows)
     SIDOBJ = convolve-sse.o convolve.o envelope.o extfilt.o filter.o pot.o sid.o voice.o wave6581__ST.o wave6581_P_T.o wave6581_PS_.o wave6581_PST.o wave8580__ST.o wave8580_P_T.o wave8580_PS_.o wave8580_PST.o wave.o
     MMCOBJ = atmmc2core.o atmmc2wfn.o ff_emu.o ff_emudir.o wildcard.o
 
-    DEFS = 	-DINCLUDE_SDDOS
+    DEFS = 	-DINCLUDE_SDDOS -Ilib/allegro4/include -Ilib/allegro4/Build/include
     LIBS =  -mwindows -lalleg -lz -lalut -lopenal32 -lwinmm -lstdc++ -static -static-libgcc -static-libstdc++
 
     TARGET_BIN = Atomulator.exe
 else ifeq ($(OS),linux)
-	VPATH = $(SRCDIR) $(SRCDIR)/resid-fp $(SRCDIR)/atommc
+	VPATH = $(SRC_DIR) $(SRC_DIR)/resid-fp $(SRC_DIR)/atommc
 	CPP  = g++
     CC   = gcc
     WINDRES =
@@ -42,51 +46,57 @@ else ifeq ($(OS),linux)
     DEFS =
     LIBS =  -lalleg -lz -lalut -lopenal -lstdc++ -L/usr/local/lib -lm
 
+	MKDIR += -p
+
     TARGET_BIN = Atomulator
 else
 	$(error Should not happen)
 endif
 
-FULLOBJ = $(foreach objname, $(OBJ), $(OBJDIR)/$(objname))
-FULLSIDOBJ = $(foreach objname, $(SIDOBJ), $(OBJDIR)/resid-fp/$(objname))
-FULLMMCOBJ = $(foreach objname, $(MMCOBJ), $(OBJDIR)/atommc/$(objname))
+FULLOBJ = $(foreach objname, $(OBJ), $(BUILD_DIR)/$(objname))
+FULLSIDOBJ = $(foreach objname, $(SIDOBJ), $(BUILD_DIR)/resid-fp/$(objname))
+FULLMMCOBJ = $(foreach objname, $(MMCOBJ), $(BUILD_DIR)/atommc/$(objname))
 
 help:
 	@echo Available targets: all, clean
 	@echo See $(MAKEFILE_TARGET) in src for more targets
 
-$(TARGET_BIN) : $(FULLOBJ) $(FULLSIDOBJ) $(FULLMMCOBJ)
-	$(CC) $^ -o $(TARGET_BIN) $(LIBS)
+$(BIN_DIR)/$(TARGET_BIN) : $(FULLOBJ) $(FULLSIDOBJ) $(FULLMMCOBJ) | $(BIN_DIR)
+	$(CC) $^ -o $(BIN_DIR)/$(TARGET_BIN) $(LIBS)
 
-all : $(OBJDIR) $(TARGET_BIN)
+all : $(BIN_DIR)/$(TARGET_BIN)
 
 clean :
-	$(RM) $(OBJDIR)/*.o
-	$(RM) $(OBJDIR)/atommc/*.o
-	$(RM) $(OBJDIR)/resid-fp/*.o
+	$(RM) $(BUILD_DIR)/*.o
+	$(RM) $(BUILD_DIR)/atommc/*.o
+	$(RM) $(BUILD_DIR)/resid-fp/*.o
+	$(RM) $(BIN_DIR)/$(TARGET_BIN)
 
-$(OBJDIR)/%.o : $(SRCDIR)/%.c
+$(BUILD_DIR)/%.o : $(SRC_DIR)/%.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
 
-$(OBJDIR)/%.o : $(SRCDIR)/%.cc
+$(BUILD_DIR)/%.o : $(SRC_DIR)/%.cc | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
 
-$(OBJDIR)/atommc/%.o : $(SRCDIR)/atommc/%.c
+$(BUILD_DIR)/atommc/%.o : $(SRC_DIR)/atommc/%.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
 
-$(OBJDIR)/atommc/%.o : $(SRCDIR)/atommc/%.cc
+$(BUILD_DIR)/atommc/%.o : $(SRC_DIR)/atommc/%.cc | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
 
-$(OBJDIR)/resid-fp/%.o : $(SRCDIR)/resid-fp/%.c
+$(BUILD_DIR)/resid-fp/%.o : $(SRC_DIR)/resid-fp/%.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
 
-$(OBJDIR)/resid-fp/%.o : $(SRCDIR)/resid-fp/%.cc
+$(BUILD_DIR)/resid-fp/%.o : $(SRC_DIR)/resid-fp/%.cc | $(BUILD_DIR)
 	$(CC) $(CFLAGS) $(DEFS) -c $< -o $@
 
-atom.res: src/atom.rc
+$(BUILD_DIR)/atom.res: src/atom.rc | $(BUILD_DIR)
 	$(WINDRES) -i atom.rc --input-format=rc -o atom.res -O coff
 
-$(OBJDIR) :
-	mkdir -p $(OBJDIR)
-	mkdir -p $(OBJDIR)/resid-fp
-	mkdir -p $(OBJDIR)/atommc
+$(BUILD_DIR) : ;
+	$(MKDIR) $(BUILD_DIR)
+	$(MKDIR) $(BUILD_DIR)/resid-fp
+	$(MKDIR) $(BUILD_DIR)/atommc
+
+$(BIN_DIR) : ;
+	$(MKDIR) $(BIN_DIR)
