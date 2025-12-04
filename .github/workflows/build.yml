@@ -143,10 +143,13 @@ jobs:
         Copy-Item lib/allegro4/Build/lib/alleg44.dll bin
         Copy-Item lib/openal-soft/build/OpenAL32.dll bin
         Copy-Item lib/freealut/build/src/libalut.dll bin
-        Copy-Item -Recurse roms bin
         Copy-Item C:\mingw32\i686-w64-mingw32\lib\libstdc++-6.dll bin
         Copy-Item C:\mingw32\opt\bin\libgcc_s_dw2-1.dll bin
         Copy-Item C:\mingw32\opt\bin\libwinpthread-1.dll bin
+        
+        Copy-Item -Recurse roms bin
+        Copy-Item -Recurse ddnoise bin
+        Copy-Item -Recurse mmc bin
 
     - name: Upload Build
       uses: actions/upload-artifact@v5.0.0
