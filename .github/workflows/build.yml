@@ -170,8 +170,11 @@ jobs:
     - name: make
       run: make all
 
-    - name: Copy ROMS
-      run: cp -r roms bin
+    - name: Copy ROMS etc
+      run: |
+        cp -r roms bin
+        cp -r ddnoise bin
+        cp -r mmc bin
 
     - name: Upload Build
       uses: actions/upload-artifact@v5.0.0
